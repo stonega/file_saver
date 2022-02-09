@@ -66,6 +66,14 @@ class FileSaverPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
                     dialog!!.openFileManager(fileName = call.argument("name"), bytes = call.argument("bytes"), type = call.argument("type"), result = result)
 
                 }
+                "dispose" -> {
+                    Log.d(tag, "Dispose Activity")
+                    if (dialog != null) {
+                        activity?.removeActivityResultListener(dialog!!)
+                        dialog = null;
+                    }
+                    // activity = null;
+                }
                 else -> {
                     Log.d(tag, "Unknown Method called " + call.method!!)
                     result.notImplemented()

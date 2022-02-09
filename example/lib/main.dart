@@ -5,6 +5,7 @@ import 'package:file_saver/file_saver.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:file_picker/file_picker.dart';
 
 void main() {
   runApp(const MyApp());
@@ -47,8 +48,17 @@ class _MyAppState extends State<MyApp> {
             ),
             ElevatedButton(
                 onPressed: () async {
+                  final result = await FilePicker.platform.pickFiles(
+                      type: FileType.custom, allowedExtensions: ['xlsx']);
+                  print(result.count);
+                },
+                child: Text('File picker')),
+            ElevatedButton(
+                onPressed: () async {
                   if (!kIsWeb) {
-                    if (Platform.isIOS || Platform.isAndroid || Platform.isMacOS) {
+                    if (Platform.isIOS ||
+                        Platform.isAndroid ||
+                        Platform.isMacOS) {
                       bool status = await Permission.storage.isGranted;
 
                       if (!status) await Permission.storage.request();
@@ -89,6 +99,7 @@ class _MyAppState extends State<MyApp> {
                         data,
                         "xlsx",
                         type);
+                    await FileSaver.instance.dispose();
                     print(path);
                   },
                   child: const Text("Generate Excel and Open Save As Dialog"),

@@ -233,7 +233,7 @@ class FileSaver {
       } else if (Platform.isAndroid) {
         Map<String, dynamic> data = <String, dynamic>{
           "bytes": bytes,
-          "name": name + (ext == "" ? ext : ("."+ext)),
+          "name": name + (ext == "" ? ext : ("." + ext)),
         };
         _directory = await _channel.invokeMethod<String>(_saveFile, data) ?? "";
       } else {
@@ -244,7 +244,8 @@ class FileSaver {
               "The path was found null or empty, please report the issue at " +
                   _issueLink);
         } else {
-          String filePath = _path + '/' + name + (ext == "" ? ext : ("."+ext));
+          String filePath =
+              _path + '/' + name + (ext == "" ? ext : ("." + ext));
           final File _file = File(filePath);
           await _file.writeAsBytes(bytes);
           bool _exist = await _file.exists();
@@ -283,5 +284,11 @@ class FileSaver {
     };
     String _path = await _openFileManager(data);
     return _path;
+  }
+
+  dispose() async {
+    if (Platform.isAndroid) {
+      await _channel.invokeMethod('dispose') ?? "";
+    }
   }
 }
